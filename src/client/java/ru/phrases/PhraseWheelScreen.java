@@ -103,11 +103,14 @@ public final class PhraseWheelScreen extends Screen {
 
         drawDisk(graphics, centerX, centerY, innerRadius + 2, ACCENT);
         drawDisk(graphics, centerX, centerY, innerRadius, 0xFF202636);
-        drawCentered(graphics, wheelPage == 0 ? "ФРАЗЫ 1" : "ФРАЗЫ 2", centerX, centerY - 5, TEXT);
-        drawCentered(graphics, "удерживай Y", centerX, centerY + 10, 0xFFB6C0D8);
-        drawCentered(graphics, "‹", centerX - outerRadius - 35, centerY - 10, TEXT);
-        drawCentered(graphics, "›", centerX + outerRadius + 35, centerY - 10, TEXT);
-        drawCentered(graphics, "Выбери направление мышью", centerX, centerY + outerRadius + 30, 0xFFD8DEEC);
+        SfProPhraseRenderer.drawGuiText(graphics, wheelPage == 0 ? "Фразы 1" : "Фразы 2",
+                centerX, centerY - 18, 96, TEXT, 0.25F);
+        SfProPhraseRenderer.drawGuiText(graphics, "Удерживай Y",
+                centerX, centerY + 2, 100, 0xFFB6C0D8, 0.19F);
+        drawChevron(graphics, centerX - outerRadius - 35, centerY, true, TEXT);
+        drawChevron(graphics, centerX + outerRadius + 35, centerY, false, TEXT);
+        SfProPhraseRenderer.drawGuiText(graphics, "Выбери направление мышью",
+                centerX, centerY + outerRadius + 22, 260, 0xFFD8DEEC, 0.18F);
     }
 
     private int selectedIndex(int mouseX, int mouseY, int centerX, int centerY) {
@@ -127,19 +130,22 @@ public final class PhraseWheelScreen extends Screen {
 
     private void drawCenteredWrapped(GuiGraphics graphics, String text, int centerX, int centerY, int maxWidth, int color) {
         if (text.length() <= 11) {
-            SfProPhraseRenderer.drawGuiText(graphics, text, centerX, centerY - 9, maxWidth, color);
+            SfProPhraseRenderer.drawGuiText(graphics, text, centerX, centerY - 8, maxWidth, color, 0.22F);
             return;
         }
 
         String[] words = text.split(" ");
         String first = words[0];
         String second = text.substring(first.length()).trim();
-        SfProPhraseRenderer.drawGuiText(graphics, first, centerX, centerY - 14, maxWidth, color);
-        SfProPhraseRenderer.drawGuiText(graphics, second, centerX, centerY - 1, maxWidth, color);
+        SfProPhraseRenderer.drawGuiText(graphics, first, centerX, centerY - 13, maxWidth, color, 0.20F);
+        SfProPhraseRenderer.drawGuiText(graphics, second, centerX, centerY, maxWidth, color, 0.20F);
     }
 
-    private void drawCentered(GuiGraphics graphics, String text, int x, int y, int color) {
-        SfProPhraseRenderer.drawGuiText(graphics, text, x, y, 240, color);
+    private static void drawChevron(GuiGraphics graphics, int centerX, int centerY, boolean left, int color) {
+        for (int i = 0; i < 7; i++) {
+            int x = left ? centerX + Math.abs(i - 3) : centerX - Math.abs(i - 3);
+            graphics.fill(x, centerY - 3 + i, x + 2, centerY - 2 + i, color);
+        }
     }
 
     private static void drawDisk(GuiGraphics graphics, int centerX, int centerY, int radius, int color) {

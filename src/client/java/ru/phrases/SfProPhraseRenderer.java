@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /** Custom MSDF renderer. The TTF is only used offline to generate the atlas. */
@@ -60,7 +59,7 @@ public final class SfProPhraseRenderer {
         ensureLoaded();
         if (renderType == null) return;
 
-        String text = phrase.toUpperCase(Locale.ROOT);
+        String text = phrase;
         float scale = 0.0032F;
         float width = textWidth(text);
         poseStack.pushPose();
@@ -73,21 +72,28 @@ public final class SfProPhraseRenderer {
 
     public static void drawGuiText(GuiGraphics graphics, String text, int centerX, int topY,
                                    int maxWidth, int color) {
+        drawGuiText(graphics, text, centerX, topY, maxWidth, color, 0.23F);
+    }
+
+    public static void drawGuiText(GuiGraphics graphics, String text, int centerX, int topY,
+                                   int maxWidth, int color, float requestedScale) {
         ensureLoaded();
         if (renderType == null || text == null || text.isBlank()) return;
-        String value = text.toUpperCase(Locale.ROOT);
-        float scale = 0.34F;
+        String value = text;
+        float scale = requestedScale;
         float width = textWidth(value) * scale;
         if (width > maxWidth) scale *= maxWidth / width;
         float x = centerX - textWidth(value) * scale / 2.0F;
         for (int i = 0; i < value.length(); i++) {
             Glyph glyph = glyph(value.charAt(i));
-            int drawX = Math.round(x + glyph.xOffset * scale);
-            int drawY = Math.round(topY + glyph.yOffset * scale);
-            int drawWidth = Math.max(1, Math.round(glyph.width * scale));
-            int drawHeight = Math.max(1, Math.round(glyph.height * scale));
-            graphics.blit(PIPELINE, ATLAS_ID, drawX, drawY, glyph.x, glyph.y,
-                    drawWidth, drawHeight, glyph.width, glyph.height, atlasWidth, atlasHeight);
+            if (glyph.width > 0 && glyph.height > 0) {
+                int drawX = Math.round(x + glyph.xOffset * scale);
+                int drawY = Math.round(topY + glyph.yOffset * scale);
+                int drawWidth = Math.max(1, Math.round(glyph.width * scale));
+                int drawHeight = Math.max(1, Math.round(glyph.height * scale));
+                graphics.blit(PIPELINE, ATLAS_ID, drawX, drawY, glyph.x, glyph.y,
+                        drawWidth, drawHeight, glyph.width, glyph.height, atlasWidth, atlasHeight);
+            }
             x += glyph.xAdvance * scale;
         }
     }

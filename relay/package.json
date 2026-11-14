@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.mjs"
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "ws": "^8.18.0"
+    "wrangler": "^4.45.0"
   }
 }

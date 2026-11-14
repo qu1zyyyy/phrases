@@ -1,0 +1,11 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "phrases:fonts/SF-Pro.ttf",
+      "shift": [0, 0],
+      "size": 16,
+      "oversample": 2.0
+    }
+  ]
+}

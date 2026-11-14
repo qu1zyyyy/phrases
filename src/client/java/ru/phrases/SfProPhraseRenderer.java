@@ -86,18 +86,22 @@ public final class SfProPhraseRenderer {
         float scale = requestedScale * 64.0F / sourceFontSize;
         float width = textWidth(value) * scale;
         if (width > maxWidth) scale *= maxWidth / width;
-        float x = centerX - textWidth(value) * scale / 2.0F;
-        for (int i = 0; i < value.length(); i++) {
-            Glyph glyph = glyph(value.charAt(i));
-            if (glyph.width > 0 && glyph.height > 0) {
-                int drawX = Math.round(x + glyph.xOffset * scale);
-                int drawY = Math.round(topY + glyph.yOffset * scale);
-                int drawWidth = Math.max(1, Math.round(glyph.width * scale));
-                int drawHeight = Math.max(1, Math.round(glyph.height * scale));
-                graphics.blit(PIPELINE, ATLAS_ID, drawX, drawY, glyph.x, glyph.y,
-                        drawWidth, drawHeight, glyph.width, glyph.height, atlasWidth, atlasHeight, color);
+        graphics.pose().pushMatrix();
+        try {
+            graphics.pose().translate(centerX - textWidth(value) * scale / 2.0F, topY);
+            graphics.pose().scale(scale, scale);
+            int x = 0;
+            for (int i = 0; i < value.length(); i++) {
+                Glyph glyph = glyph(value.charAt(i));
+                if (glyph.width > 0 && glyph.height > 0) {
+                    graphics.blit(PIPELINE, ATLAS_ID, x + glyph.xOffset, glyph.yOffset,
+                            glyph.x, glyph.y, glyph.width, glyph.height,
+                            glyph.width, glyph.height, atlasWidth, atlasHeight, color);
+                }
+                x += glyph.xAdvance;
             }
-            x += glyph.xAdvance * scale;
+        } finally {
+            graphics.pose().popMatrix();
         }
     }
 

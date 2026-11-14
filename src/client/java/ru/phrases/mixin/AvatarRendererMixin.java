@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import ru.phrases.CustomPhraseRenderer;
 import ru.phrases.PhrasesClient;
+import ru.phrases.SfProPhraseRenderer;
 
 @Mixin(AvatarRenderer.class)
 public abstract class AvatarRendererMixin {
@@ -33,6 +33,6 @@ public abstract class AvatarRendererMixin {
         if (phrase == null) {
             return;
         }
-        CustomPhraseRenderer.submit(phrase, state, poseStack, queue, cameraState);
+        SfProPhraseRenderer.submit(phrase, state, poseStack, queue, cameraState);
     }
 }

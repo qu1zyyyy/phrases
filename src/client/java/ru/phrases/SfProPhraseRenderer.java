@@ -87,7 +87,7 @@ public final class SfProPhraseRenderer {
             int drawWidth = Math.max(1, Math.round(glyph.width * scale));
             int drawHeight = Math.max(1, Math.round(glyph.height * scale));
             graphics.blit(PIPELINE, ATLAS_ID, drawX, drawY, glyph.x, glyph.y,
-                    drawWidth, drawHeight, atlasWidth, atlasHeight);
+                    drawWidth, drawHeight, glyph.width, glyph.height, atlasWidth, atlasHeight);
             x += glyph.xAdvance * scale;
         }
     }

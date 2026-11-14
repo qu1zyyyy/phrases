@@ -5,8 +5,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FontDescription;
-import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -33,7 +31,6 @@ public final class PhraseWheelScreen extends Screen {
     private static final int SEGMENT_SELECTED = 0xFF4D6EA8;
     private static final int ACCENT = 0xFF8DB5FF;
     private static final int TEXT = 0xFFF2F5FF;
-    private static final Identifier SF_PRO = Identifier.fromNamespaceAndPath(PhrasesClient.MOD_ID, "sf_pro");
     private int wheelPage;
     private int selectedPhraseIndex = -1;
 
@@ -129,25 +126,20 @@ public final class PhraseWheelScreen extends Screen {
     }
 
     private void drawCenteredWrapped(GuiGraphics graphics, String text, int centerX, int centerY, int maxWidth, int color) {
-        Component sfText = sf(text);
-        if (this.font.width(sfText) <= maxWidth) {
-            graphics.drawCenteredString(this.font, sfText, centerX, centerY - 4, color);
+        if (text.length() <= 11) {
+            SfProPhraseRenderer.drawGuiText(graphics, text, centerX, centerY - 9, maxWidth, color);
             return;
         }
 
         String[] words = text.split(" ");
         String first = words[0];
         String second = text.substring(first.length()).trim();
-        drawCentered(graphics, first, centerX, centerY - 9, color);
-        drawCentered(graphics, second, centerX, centerY + 2, color);
+        SfProPhraseRenderer.drawGuiText(graphics, first, centerX, centerY - 14, maxWidth, color);
+        SfProPhraseRenderer.drawGuiText(graphics, second, centerX, centerY - 1, maxWidth, color);
     }
 
     private void drawCentered(GuiGraphics graphics, String text, int x, int y, int color) {
-        graphics.drawCenteredString(this.font, sf(text), x, y, color);
-    }
-
-    private static Component sf(String text) {
-        return Component.literal(text).withStyle(style -> style.withFont(new FontDescription.Resource(SF_PRO)));
+        SfProPhraseRenderer.drawGuiText(graphics, text, x, y, 240, color);
     }
 
     private static void drawDisk(GuiGraphics graphics, int centerX, int centerY, int radius, int color) {

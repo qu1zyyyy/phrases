@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -60,6 +61,27 @@ public final class SfProPhraseRenderer {
         poseStack.popPose();
     }
 
+    public static void drawGuiText(GuiGraphics graphics, String text, int centerX, int topY,
+                                   int maxWidth, int color) {
+        ensureFont();
+        if (renderType == null || text == null || text.isBlank()) return;
+        String value = text.toUpperCase(Locale.ROOT);
+        float scale = 0.34F;
+        float width = textWidth(value) * scale;
+        if (width > maxWidth) scale *= maxWidth / width;
+        float x = centerX - textWidth(value) * scale / 2.0F;
+        for (int i = 0; i < value.length(); i++) {
+            Glyph glyph = FONT.getOrDefault(value.charAt(i), FONT.get(' '));
+            int drawX = Math.round(x);
+            int drawY = Math.round(topY);
+            int drawWidth = Math.max(1, Math.round(CELL_WIDTH * scale));
+            int drawHeight = Math.max(1, Math.round(CELL_HEIGHT * scale));
+            graphics.blit(TEXTURE_ID, drawX, drawY, drawWidth, drawHeight,
+                    glyph.u0, glyph.v0, glyph.u1 - glyph.u0, glyph.v1 - glyph.v0);
+            x += glyph.advance * scale;
+        }
+    }
+
     private static void ensureFont() {
         if (initialized) return;
         initialized = true;
@@ -85,7 +107,9 @@ public final class SfProPhraseRenderer {
                         cellY / (float) ATLAS_HEIGHT,
                         (cellX + CELL_WIDTH) / (float) ATLAS_WIDTH,
                         (cellY + CELL_HEIGHT) / (float) ATLAS_HEIGHT,
-                        Math.max(advance, 12)
+                        Math.max(advance, 12),
+                        cellX,
+                        cellY
                 ));
             }
             graphics.dispose();
@@ -140,5 +164,5 @@ public final class SfProPhraseRenderer {
         vertices.addVertex(pose, x, y + height, 0).setColor(color).setUv(glyph.u0, glyph.v1).setUv2(15728880, 15728880);
     }
 
-    private record Glyph(float u0, float v0, float u1, float v1, float advance) {}
+    private record Glyph(float u0, float v0, float u1, float v1, float advance, int cellX, int cellY) {}
 }

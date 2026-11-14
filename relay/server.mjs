@@ -24,8 +24,8 @@ wss.on("connection", (socket) => {
       return;
     }
 
-    if (message.type === "phrase" && typeof message.id === "string") {
-      const payload = JSON.stringify({ type: "phrase", id: message.id.slice(0, 80) });
+    if (message.type === "phrase" && typeof message.id === "string" && typeof message.name === "string") {
+      const payload = JSON.stringify({ type: "phrase", id: message.id.slice(0, 80), name: message.name.slice(0, 32) });
       for (const peer of clients) {
         if (peer !== socket && peer.readyState === peer.OPEN) peer.send(payload);
       }

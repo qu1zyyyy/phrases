@@ -82,7 +82,10 @@ final class RelayClient {
                 if (separator > 0) values.put(line.substring(0, separator).trim(), line.substring(separator + 1).trim());
             }
             String configuredUrl = values.get("url");
-            url = configuredUrl == null || configuredUrl.isBlank() ? DEFAULT_URL : configuredUrl;
+            url = configuredUrl == null || configuredUrl.isBlank()
+                    || configuredUrl.equals("wss://phrases-relay.onrender.com")
+                    || configuredUrl.equals("wss://phrases-relay.phrases-relay.workers.dev")
+                    ? DEFAULT_URL : configuredUrl;
         } catch (IOException ignored) {
             // Сетевой relay необязателен: локальные звуки продолжают работать без него.
         }

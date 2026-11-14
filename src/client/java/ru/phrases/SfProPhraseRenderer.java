@@ -78,7 +78,7 @@ public final class SfProPhraseRenderer {
             int drawY = Math.round(topY);
             int drawWidth = Math.max(1, Math.round(CELL_WIDTH * scale));
             int drawHeight = Math.max(1, Math.round(CELL_HEIGHT * scale));
-            graphics.blit(TEXTURE_ID, drawX, drawY, drawWidth, drawHeight,
+            graphics.blit(TEXTURE_ID, drawX, drawY, drawX + drawWidth, drawY + drawHeight,
                     glyph.u0, glyph.v0, glyph.u1 - glyph.u0, glyph.v1 - glyph.v0);
             x += glyph.advance * scale;
         }

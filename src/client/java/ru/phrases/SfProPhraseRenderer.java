@@ -55,7 +55,9 @@ public final class SfProPhraseRenderer {
                 state.nameTagAttachment.z
         );
         poseStack.mulPose(cameraState.orientation);
-        poseStack.scale(-0.025F, -0.025F, 0.025F);
+        // The atlas is rendered at 72 px. Convert those pixels to the same
+        // world-space height as a normal Minecraft name tag.
+        poseStack.scale(-0.004F, -0.004F, 0.004F);
         queue.submitCustomGeometry(poseStack, renderType,
                 (pose, vertices) -> draw(text, width, pose, vertices));
         poseStack.popPose();

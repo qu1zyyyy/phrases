@@ -15,7 +15,7 @@ import java.util.concurrent.CompletionStage;
 
 final class RelayClient {
     private static final Path CONFIG = Path.of("config", "phrases-relay.properties");
-    private static final String DEFAULT_URL = "wss://phrases-relay.phrases-relay.workers.dev";
+    private static final String DEFAULT_URL = "wss://phrases-relay.qu1zyyy.workers.dev";
     private static final HttpClient HTTP = HttpClient.newHttpClient();
     private static String url = DEFAULT_URL;
     private static WebSocket socket;

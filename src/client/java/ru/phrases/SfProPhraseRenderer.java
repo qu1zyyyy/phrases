@@ -49,6 +49,7 @@ public final class SfProPhraseRenderer {
     private static int atlasWidth = 512;
     private static int atlasHeight = 512;
     private static int baseline = 61;
+    private static int sourceFontSize = 64;
     private static boolean initialized;
 
     private SfProPhraseRenderer() {}
@@ -60,7 +61,7 @@ public final class SfProPhraseRenderer {
         if (renderType == null) return;
 
         String text = phrase;
-        float scale = 0.0032F;
+        float scale = 0.0032F * 64.0F / sourceFontSize;
         float width = textWidth(text);
         poseStack.pushPose();
         poseStack.translate(state.nameTagAttachment.x, state.nameTagAttachment.y + 0.30F, state.nameTagAttachment.z);
@@ -80,7 +81,7 @@ public final class SfProPhraseRenderer {
         ensureLoaded();
         if (renderType == null || text == null || text.isBlank()) return;
         String value = text;
-        float scale = requestedScale;
+        float scale = requestedScale * 64.0F / sourceFontSize;
         float width = textWidth(value) * scale;
         if (width > maxWidth) scale *= maxWidth / width;
         float x = centerX - textWidth(value) * scale / 2.0F;
@@ -105,6 +106,7 @@ public final class SfProPhraseRenderer {
             if (metadataStream == null) return;
             JsonObject root = GsonHelper.parse(new InputStreamReader(metadataStream, StandardCharsets.UTF_8));
             JsonObject common = root.getAsJsonObject("common");
+            sourceFontSize = root.getAsJsonObject("info").get("size").getAsInt();
             atlasWidth = common.get("scaleW").getAsInt();
             atlasHeight = common.get("scaleH").getAsInt();
             baseline = common.get("base").getAsInt();

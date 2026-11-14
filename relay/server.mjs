@@ -1,5 +1,5 @@
 import http from "node:http";
-import { WebSocketServer } from "ws";
+import { WebSocket, WebSocketServer } from "ws";
 
 const port = Number(process.env.PORT || 10000);
 const server = http.createServer((_request, response) => {
@@ -10,12 +10,25 @@ const server = http.createServer((_request, response) => {
 const clients = new Set();
 const wss = new WebSocketServer({ server });
 
+function heartbeat() {
+  for (const socket of clients) {
+    if (socket.isAlive === false) {
+      socket.terminate();
+      continue;
+    }
+    socket.isAlive = false;
+    socket.ping();
+  }
+}
+
 function leave(socket) {
   clients.delete(socket);
 }
 
 wss.on("connection", (socket) => {
   clients.add(socket);
+  socket.isAlive = true;
+  socket.on("pong", () => { socket.isAlive = true; });
   socket.on("message", (raw) => {
     let message;
     try {
@@ -27,7 +40,7 @@ wss.on("connection", (socket) => {
     if (message.type === "phrase" && typeof message.id === "string" && typeof message.name === "string") {
       const payload = JSON.stringify({ type: "phrase", id: message.id.slice(0, 80), name: message.name.slice(0, 32) });
       for (const peer of clients) {
-        if (peer !== socket && peer.readyState === peer.OPEN) peer.send(payload);
+        if (peer !== socket && peer.readyState === WebSocket.OPEN) peer.send(payload);
       }
     }
   });
@@ -38,3 +51,5 @@ wss.on("connection", (socket) => {
 server.listen(port, "0.0.0.0", () => {
   console.log(`Phrases relay listening on ${port}`);
 });
+
+setInterval(heartbeat, 20000);

@@ -7,6 +7,8 @@ import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -93,7 +95,7 @@ public final class SfProPhraseRenderer {
                 int drawWidth = Math.max(1, Math.round(glyph.width * scale));
                 int drawHeight = Math.max(1, Math.round(glyph.height * scale));
                 graphics.blit(PIPELINE, ATLAS_ID, drawX, drawY, glyph.x, glyph.y,
-                        drawWidth, drawHeight, glyph.width, glyph.height, atlasWidth, atlasHeight);
+                        drawWidth, drawHeight, glyph.width, glyph.height, atlasWidth, atlasHeight, color);
             }
             x += glyph.xAdvance * scale;
         }
@@ -129,8 +131,14 @@ public final class SfProPhraseRenderer {
         try (InputStream imageStream = SfProPhraseRenderer.class.getResourceAsStream("/assets/phrases/textures/font/sf_pro.png")) {
             if (imageStream == null) return;
             NativeImage image = NativeImage.read(imageStream);
-            Minecraft.getInstance().getTextureManager().register(ATLAS_ID, new DynamicTexture(() -> "Phrases SF Pro MSDF", image));
-            RenderSetup setup = RenderSetup.builder(PIPELINE).withTexture("Sampler0", ATLAS_ID)
+            DynamicTexture texture = new DynamicTexture(() -> "Phrases SF Pro MSDF", image) {
+                {
+                    this.sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR);
+                }
+            };
+            Minecraft.getInstance().getTextureManager().register(ATLAS_ID, texture);
+            RenderSetup setup = RenderSetup.builder(PIPELINE).withTexture("Sampler0", ATLAS_ID,
+                            () -> RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR))
                     .bufferSize(RenderType.SMALL_BUFFER_SIZE).createRenderSetup();
             renderType = RenderType.create("phrases_msdf_font", setup);
         } catch (Exception error) {

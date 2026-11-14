@@ -149,10 +149,6 @@ public final class PhraseWheelScreen extends Screen {
     }
 
     private static void drawDisk(GuiGraphics graphics, int centerX, int centerY, int radius, int color) {
-        int radiusSquared = radius * radius;
-        for (int y = -radius; y <= radius; y++) {
-            int halfWidth = (int) Math.sqrt(radiusSquared - y * y);
-            graphics.fill(centerX - halfWidth, centerY + y, centerX + halfWidth + 1, centerY + y + 1, color);
-        }
+        SmoothCircle.draw(graphics, centerX, centerY, radius, color);
     }
 }

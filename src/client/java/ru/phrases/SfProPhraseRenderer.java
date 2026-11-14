@@ -120,11 +120,9 @@ public final class SfProPhraseRenderer {
             for (int y = 0; y < ATLAS_HEIGHT; y++) {
                 for (int x = 0; x < ATLAS_WIDTH; x++) {
                     int argb = atlas.getRGB(x, y);
-                    int abgr = ((argb & 0xFF) << 24)
-                            | ((argb & 0xFF00) << 8)
-                            | ((argb >> 8) & 0xFF00)
-                            | ((argb >> 24) & 0xFF);
-                    image.setPixelABGR(x, y, abgr);
+                    // NativeImage#setPixel accepts Java ARGB and performs the
+                    // conversion to the GPU's ABGR layout itself.
+                    image.setPixel(x, y, argb);
                 }
             }
             Minecraft.getInstance().getTextureManager().register(TEXTURE_ID,

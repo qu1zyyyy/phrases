@@ -2,6 +2,10 @@ name = "phrases-relay"
 main = "src/worker.mjs"
 compatibility_date = "2026-11-14"
 
+[observability]
+enabled = true
+head_sampling_rate = 1
+
 [[durable_objects.bindings]]
 name = "PHRASES_RELAY"
 class_name = "PhrasesRelay"

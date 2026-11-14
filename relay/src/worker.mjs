@@ -50,6 +50,13 @@ export class PhrasesRelay {
         name: message.name.slice(0, MAX_NAME_LENGTH),
       });
 
+      console.log({
+        event: "phrase",
+        id: message.id.slice(0, MAX_ID_LENGTH),
+        name: message.name.slice(0, MAX_NAME_LENGTH),
+        recipients: Math.max(0, this.clients.size - 1),
+      });
+
       for (const peer of this.clients) {
         if (peer === server) continue;
         try {
